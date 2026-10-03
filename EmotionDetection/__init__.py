@@ -1,1 +1,2 @@
-from .emotion_detection import emotion_detector
+"""Import emotion detection module"""
+from . import emotion_detection

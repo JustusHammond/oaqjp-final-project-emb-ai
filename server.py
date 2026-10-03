@@ -19,21 +19,26 @@ def emot_detector():
     '''
     # Retrieve the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
-    # Pass the text to the sentiment_analyzer function and store the response
-    response = emotion_detector(text_to_analyze)
-    # Extract the emotions and rank from response
-    emotions = response["emotionPredictions"][0]["emotion"]
-    dominant_emotion = max(emotions, key=emotions.get)
+    # Pass the text to the sentiment_analyzer function and store the result
+    result = emotion_detector(text_to_analyze)
+    # Error handling for a null response
+    if result["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
     # Return the formatted string with the emotion and rank
     return (
-       f"For the given statement, the system response is {emotions} ",
-    {
-        "anger": emotions["anger"],
-        "disgust": emotions["disgust"],
-        "fear": emotions["fear"],
-        "joy": emotions["joy"],
-        "sadness": emotions["sadness"],
-        "dominant_emotion": dominant_emotion,
-    },
-       f"The dominant emotion is {dominant_emotion}" 
+        f"For the given statement, the system response is "
+        f"'anger': {result['anger']}, "
+        f"'disgust': {result['disgust']}, "
+        f"'fear': {result['fear']}, "
+        f"'joy': {result['joy']} and "
+        f"'sadness': {result['sadness']}. "
+        f"The dominant emotion is {result['dominant_emotion']}."
     )
+@app.route("/")
+def render_index_page():
+    ''' This function initiates the rendering of the main application
+        page over the Flask channel
+    '''
+    return render_template('index.html')
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
